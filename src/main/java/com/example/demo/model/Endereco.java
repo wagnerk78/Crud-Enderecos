@@ -1,58 +1,52 @@
 package com.example.demo;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "contatos")
+public class Endereco {
 
-public class Contato {
-	
+	@Id
 	private String id;
 	private String nome;
 	private String telefone;
-	
-	
-	public Contato(String id, String nome, String telefone) {
+
+	public Endereco() {
+	}
+
+	public Endereco(String id, String nome, String telefone) {
 		this.id = id;
 		this.nome = nome;
 		this.telefone = telefone;
 	}
-	
-	
-	public Contato() {
-		// TODO Auto-generated constructor stub
-	}
-
 
 	public boolean isNovo() {
 		return id == null;
 	}
-	
-	
-	
-	
-	
-
-
-
-
 
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getNome() {
 		return nome;
 	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
 	public String getTelefone() {
 		return telefone;
 	}
+
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
-	
-	
-
 }
