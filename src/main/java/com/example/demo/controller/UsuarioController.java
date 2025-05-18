@@ -62,12 +62,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}")
-    public String atualizar(@ModelAttribute Usuario usuario) {
-        // Verifica se a senha foi alterada
+    public String atualizar(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+
         if (!usuario.getSenha().isEmpty()) {
             usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         } else {
-            // Mantém a senha atual se não foi fornecida nova senha
+
             Usuario usuarioExistente = usuarioRepository.findById(usuario.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
             usuario.setSenha(usuarioExistente.getSenha());

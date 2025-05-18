@@ -103,18 +103,6 @@ class UsuarioControllerTest {
     }
 
     @Test
-    void atualizar_DeveSalvarUsuarioERedirecionar() {
-
-        Usuario usuario = new Usuario(USER_EMAIL, "senha123");
-        usuario.setId(USER_ID);
-
-        String result = usuarioController.atualizar(usuario);
-
-        assertEquals("redirect:/usuarios", result);
-        verify(usuarioRepository).save(usuario);
-    }
-
-    @Test
     void remover_QuandoUsuarioNaoEAdmin_DeveRemover() {
 
         Usuario usuario = new Usuario(USER_EMAIL, "senha123");

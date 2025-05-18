@@ -133,7 +133,7 @@ public class AdminController {
 
     @GetMapping("/")
     public String mostrarLogin() {
-        return "index"; // Nome do template login.html
+        return "index";
     }
 
 }
