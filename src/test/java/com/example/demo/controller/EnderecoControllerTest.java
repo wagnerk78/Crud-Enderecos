@@ -52,7 +52,7 @@ class EnderecoControllerTest {
 
     @Test
     void listar_QuandoUsuarioLogado_DeveRetornarEnderecos() {
-        // Arrange
+
         Usuario usuario = new Usuario(USER_EMAIL, "password");
         usuario.setId(USER_ID);
         List<Endereco> enderecos = Arrays.asList(new Endereco(), new Endereco());
@@ -60,49 +60,49 @@ class EnderecoControllerTest {
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuario));
         when(enderecoRepository.findByUsuario(usuario)).thenReturn(enderecos);
 
-        // Act
+
         ModelAndView modelAndView = enderecoController.listar(principal);
 
-        // Assert
+
         assertEquals("listar-enderecos", modelAndView.getViewName());
         assertEquals(enderecos, modelAndView.getModel().get("enderecos"));
     }
 
     @Test
     void listar_QuandoUsuarioNaoEncontrado_DeveRedirecionarParaLogin() {
-        // Arrange
+
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.empty());
 
-        // Act
+
         ModelAndView modelAndView = enderecoController.listar(principal);
 
-        // Assert
+
         assertEquals("redirect:/login", modelAndView.getViewName());
     }
 
     @Test
     void novo_DeveRetornarFormularioVazio() {
-        // Act
+
         ModelAndView modelAndView = enderecoController.novo();
 
-        // Assert
+
         assertEquals("form-endereco", modelAndView.getViewName());
         assertTrue(modelAndView.getModel().get("endereco") instanceof Endereco);
     }
 
     @Test
     void cadastrar_QuandoUsuarioLogado_DeveSalvarEndereco() {
-        // Arrange
+
         Usuario usuario = new Usuario(USER_EMAIL, "password");
         usuario.setId(USER_ID);
         Endereco endereco = new Endereco();
 
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuario));
 
-        // Act
+
         String result = enderecoController.cadastrar(endereco, principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?sucesso", result);
         verify(enderecoRepository).save(endereco);
         assertEquals(usuario, endereco.getUsuario());
@@ -111,20 +111,20 @@ class EnderecoControllerTest {
 
     @Test
     void cadastrar_QuandoUsuarioNaoEncontrado_DeveRedirecionarComErro() {
-        // Arrange
+
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.empty());
 
-        // Act
+
         String result = enderecoController.cadastrar(new Endereco(), principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?erro", result);
         verify(enderecoRepository, never()).save(any());
     }
 
     @Test
     void editar_QuandoEnderecoPertenceAoUsuario_DeveRetornarFormulario() {
-        // Arrange
+
         Usuario usuario = new Usuario(USER_EMAIL, "password");
         usuario.setId(USER_ID);
         Endereco endereco = new Endereco();
@@ -134,20 +134,20 @@ class EnderecoControllerTest {
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.of(endereco));
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuario));
 
-        // Act
+
         ModelAndView modelAndView = enderecoController.editar(ENDERECO_ID, principal);
 
-        // Assert
+
         assertEquals("form-endereco", modelAndView.getViewName());
         assertEquals(endereco, modelAndView.getModel().get("endereco"));
     }
 
     @Test
     void editar_QuandoEnderecoNaoEncontrado_DeveLancarExcecao() {
-        // Arrange
+
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.empty());
 
-        // Act & Assert
+
         assertThrows(IllegalArgumentException.class, () -> {
             enderecoController.editar(ENDERECO_ID, principal);
         });
@@ -155,7 +155,7 @@ class EnderecoControllerTest {
 
     @Test
     void editar_QuandoNaoPertenceAoUsuario_DeveRedirecionar() {
-        // Arrange
+
         Usuario outroUsuario = new Usuario("other@example.com", "password");
         outroUsuario.setId(UUID.randomUUID());
 
@@ -169,16 +169,16 @@ class EnderecoControllerTest {
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.of(endereco));
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuarioLogado));
 
-        // Act
+
         ModelAndView modelAndView = enderecoController.editar(ENDERECO_ID, principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?acessoNegado", modelAndView.getViewName());
     }
 
     @Test
     void atualizar_QuandoDadosValidos_DeveAtualizarEndereco() {
-        // Arrange
+
         Usuario usuario = new Usuario(USER_EMAIL, "password");
         usuario.setId(USER_ID);
 
@@ -198,10 +198,10 @@ class EnderecoControllerTest {
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuario));
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.of(enderecoOriginal));
 
-        // Act
+
         String result = enderecoController.atualizar(ENDERECO_ID, enderecoAtualizado, principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?atualizado", result);
         verify(enderecoRepository).save(enderecoOriginal);
         assertEquals("Nova Rua", enderecoOriginal.getLogradouro());
@@ -215,7 +215,7 @@ class EnderecoControllerTest {
 
     @Test
     void atualizar_QuandoEnderecoNaoPertenceAoUsuario_DeveRedirecionarComAcessoNegado() {
-        // Arrange
+
         Usuario outroUsuario = new Usuario("other@example.com", "password");
         outroUsuario.setId(UUID.randomUUID());
 
@@ -229,17 +229,17 @@ class EnderecoControllerTest {
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuarioLogado));
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.of(enderecoOriginal));
 
-        // Act
+
         String result = enderecoController.atualizar(ENDERECO_ID, new Endereco(), principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?acessoNegado", result);
         verify(enderecoRepository, never()).save(any());
     }
 
     @Test
     void remover_QuandoEnderecoPertenceAoUsuario_DeveRemover() {
-        // Arrange
+
         Usuario usuario = new Usuario(USER_EMAIL, "password");
         usuario.setId(USER_ID);
 
@@ -250,28 +250,28 @@ class EnderecoControllerTest {
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.of(endereco));
         when(usuarioRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(usuario));
 
-        // Act
+
         String result = enderecoController.remover(ENDERECO_ID, principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?removido", result);
         verify(enderecoRepository).deleteById(ENDERECO_ID);
     }
 
     @Test
     void remover_QuandoEnderecoNaoEncontrado_DeveRedirecionarComErro() {
-        // Arrange
+
         when(enderecoRepository.findById(ENDERECO_ID)).thenReturn(Optional.empty());
 
-        // Act
+
         String result = enderecoController.remover(ENDERECO_ID, principal);
 
-        // Assert
+
         assertEquals("redirect:/enderecos?erro", result);
         verify(enderecoRepository, never()).deleteById(any());
     }
 
-    // Testes de integração com MockMvc
+
 
     @Test
     void listar_GET_DeveRetornarPaginaDeEnderecos() throws Exception {

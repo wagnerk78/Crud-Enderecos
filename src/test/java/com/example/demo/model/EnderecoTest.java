@@ -8,10 +8,10 @@ class EnderecoTest {
 
     @Test
     void testConstrutorPadrao() {
-        // Act
+
         Endereco endereco = new Endereco();
 
-        // Assert
+
         assertNotNull(endereco);
         assertNull(endereco.getId());
         assertNull(endereco.getLogradouro());
@@ -20,7 +20,7 @@ class EnderecoTest {
 
     @Test
     void testConstrutorComParametros() {
-        // Arrange
+
         String logradouro = "Rua Teste";
         String numero = "123";
         String complemento = "Apto 101";
@@ -31,11 +31,11 @@ class EnderecoTest {
         Usuario usuario = new Usuario();
         usuario.setId(UUID.randomUUID());
 
-        // Act
+
         Endereco endereco = new Endereco(logradouro, numero, complemento,
                 bairro, cidade, estado, cep, usuario);
 
-        // Assert
+
         assertNotNull(endereco);
         assertEquals(logradouro, endereco.getLogradouro());
         assertEquals(numero, endereco.getNumero());
@@ -49,7 +49,7 @@ class EnderecoTest {
 
     @Test
     void testGettersAndSetters() {
-        // Arrange
+
         Endereco endereco = new Endereco();
         UUID id = UUID.randomUUID();
         String logradouro = "Av. Paulista";
@@ -61,7 +61,7 @@ class EnderecoTest {
         String cep = "01311000";
         Usuario usuario = new Usuario();
 
-        // Act
+
         endereco.setId(id);
         endereco.setLogradouro(logradouro);
         endereco.setNumero(numero);
@@ -72,7 +72,7 @@ class EnderecoTest {
         endereco.setCep(cep);
         endereco.setUsuario(usuario);
 
-        // Assert
+
         assertEquals(id, endereco.getId());
         assertEquals(logradouro, endereco.getLogradouro());
         assertEquals(numero, endereco.getNumero());
@@ -86,26 +86,26 @@ class EnderecoTest {
 
     @Test
     void testAssociacaoUsuario() {
-        // Arrange
+
         Endereco endereco = new Endereco();
         Usuario usuario = new Usuario();
         usuario.setEmail("test@example.com");
 
-        // Act
+
         endereco.setUsuario(usuario);
 
-        // Assert
+
         assertEquals(usuario, endereco.getUsuario());
         assertEquals("test@example.com", endereco.getUsuario().getEmail());
     }
 
     @Test
     void testAtualizacaoDeCampos() {
-        // Arrange
+
         Endereco endereco = new Endereco("Rua Antiga", "1", null,
                 "Centro", "Rio", "RJ", "20000000", null);
 
-        // Act
+
         endereco.setLogradouro("Rua Nova");
         endereco.setNumero("2");
         endereco.setComplemento("Sala 3");
@@ -114,7 +114,7 @@ class EnderecoTest {
         endereco.setEstado("RJ");
         endereco.setCep("22020000");
 
-        // Assert
+
         assertEquals("Rua Nova", endereco.getLogradouro());
         assertEquals("2", endereco.getNumero());
         assertEquals("Sala 3", endereco.getComplemento());
@@ -126,13 +126,13 @@ class EnderecoTest {
 
     @Test
     void testConstrutorComAlgunsParametrosNulos() {
-        // Arrange
+
         Usuario usuario = new Usuario();
 
-        // Act
+
         Endereco endereco = new Endereco(null, null, null, null, null, null, null, usuario);
 
-        // Assert
+
         assertNull(endereco.getLogradouro());
         assertNull(endereco.getNumero());
         assertNull(endereco.getComplemento());

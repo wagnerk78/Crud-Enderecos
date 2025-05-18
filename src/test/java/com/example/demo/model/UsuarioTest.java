@@ -37,7 +37,7 @@ class UsuarioTest {
     void deveCriarUsuarioComConstrutorInvalidoSemAtribuirValores() {
         Usuario usuario = new Usuario("mail", "senha123");
 
-        assertThat(usuario.getNome()).isNull(); // o construtor não atribui nenhum valor
+        assertThat(usuario.getNome()).isNull();
         assertThat(usuario.getEmail()).isNull();
         assertThat(usuario.getSenha()).isNull();
     }

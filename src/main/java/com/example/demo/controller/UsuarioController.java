@@ -62,7 +62,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}")
-    public String atualizar(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+    public String atualizar(@ModelAttribute Usuario usuario) {
         // Verifica se a senha foi alterada
         if (!usuario.getSenha().isEmpty()) {
             usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));

@@ -4,7 +4,6 @@ import com.example.demo.model.Endereco;
 import com.example.demo.model.Usuario;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +25,7 @@ class EnderecoRepositoryTest {
 
     @Test
     void findByUsuario_ShouldReturnListOfEnderecos() {
-        // Arrange
+
         Usuario usuario = new Usuario();
         usuario.setId(UUID.randomUUID());
 
@@ -39,10 +38,10 @@ class EnderecoRepositoryTest {
 
         when(enderecoRepository.findByUsuario(usuario)).thenReturn(expectedEnderecos);
 
-        // Act
+
         List<Endereco> result = enderecoRepository.findByUsuario(usuario);
 
-        // Assert
+
         assertEquals(2, result.size());
         assertTrue(result.containsAll(expectedEnderecos));
         verify(enderecoRepository, times(1)).findByUsuario(usuario);
@@ -51,30 +50,30 @@ class EnderecoRepositoryTest {
     @Test
     @Transactional
     void deleteByUsuarioId_ShouldDeleteEnderecos() {
-        // Arrange
+
         UUID usuarioId = UUID.randomUUID();
 
         doNothing().when(enderecoRepository).deleteByUsuarioId(usuarioId);
 
-        // Act
+
         enderecoRepository.deleteByUsuarioId(usuarioId);
 
-        // Assert
+
         verify(enderecoRepository, times(1)).deleteByUsuarioId(usuarioId);
     }
 
     @Test
     void findByUsuario_WhenNoEnderecos_ShouldReturnEmptyList() {
-        // Arrange
+
         Usuario usuario = new Usuario();
         usuario.setId(UUID.randomUUID());
 
         when(enderecoRepository.findByUsuario(usuario)).thenReturn(List.of());
 
-        // Act
+
         List<Endereco> result = enderecoRepository.findByUsuario(usuario);
 
-        // Assert
+
         assertTrue(result.isEmpty());
         verify(enderecoRepository, times(1)).findByUsuario(usuario);
     }
