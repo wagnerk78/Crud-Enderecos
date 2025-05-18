@@ -101,7 +101,10 @@
 <body>
 
 <!-- Toaster para exibir mensagens -->
-<div th:if="${param.error}" class="toast error">Usuário ou senha inválidos.</div>
+<div th:if="${param.error}" class="toast error">
+	<span th:if="${param.admin != null}">Credenciais de administrador inválidas</span>
+	<span th:if="${param.admin == null}">Usuário ou senha inválidos</span>
+</div>
 <div th:if="${erroCadastro}" class="toast error" th:text="${erroCadastro}"></div>
 <div th:if="${mensagemCadastro}" class="toast success" th:text="${mensagemCadastro}"></div>
 

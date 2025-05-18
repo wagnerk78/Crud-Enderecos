@@ -7,74 +7,85 @@
 	<style>
 		/* Estilização geral */
         body {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-color: #f3f3f3;
-          font-family: 'Josefin Sans', sans-serif;
-          padding: 20px;
-          margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f3f3f3;
+            font-family: 'Josefin Sans', sans-serif;
+            padding: 20px;
+            margin: 0;
         }
 
         /* Container centralizado com fundo branco e sombra */
         .container {
-          background: white;
-          padding: 2rem;
-          border-radius: 10px;
-          box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-          width: 80%;
-          max-width: 800px;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 95%;
+            max-width: 1200px;
         }
 
         h1 {
-          text-align: center;
-          margin-bottom: 20px;
-          color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
         }
 
         a {
-          text-decoration: none;
-          color: #80aebd;
-          font-weight: bold;
+            text-decoration: none;
+            color: #80aebd;
+            font-weight: bold;
         }
 
         a:hover {
-          text-decoration: underline;
+            text-decoration: underline;
         }
 
-        /* Estilização da tabela */
+        /* Estilização da tabela - AJUSTE PARA CONTEÚDO */
         table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-        }
-
-        table, th, td {
-          border: 1px solid #ccc;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: auto; /* Permite que as colunas se ajustem ao conteúdo */
         }
 
         th, td {
-          padding: 10px;
-          text-align: center;
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ccc;
+            white-space: nowrap; /* Impede quebra de linha */
         }
 
         th {
-          background-color: #f3f3f3;
+            background-color: #f3f3f3;
+            font-size: 1em;
+        }
+
+        /* Ações com espaço controlado */
+        .acoes a {
+            margin: 0 5px;
+            white-space: nowrap;
         }
 
         .botao-voltar {
-          display: block;
-          margin: 20px auto 0;
-          padding: 10px 15px;
-          background-color: #80aebd;
-          color: white;
-          border-radius: 5px;
-          text-align: center;
-          width: fit-content;
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 15px;
+            background-color: #80aebd;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            width: fit-content;
         }
 
         .botao-voltar:hover {
-          background-color: #1A237E;
+            background-color: #1A237E;
+        }
+
+        /* Hover suave apenas */
+        tbody tr:hover {
+            background-color: #f8f9fa;
         }
 	</style>
 </head>
@@ -104,9 +115,9 @@
 			<td th:text="${endereco.cidade}"></td>
 			<td th:text="${endereco.estado}"></td>
 			<td th:text="${endereco.cep}"></td>
-			<td>
+			<td class="acoes">
 				<a th:href="@{'/enderecos/' + ${endereco.id} + '/editar'}">Editar</a>
-				&nbsp;|&nbsp;
+				|
 				<a th:href="@{'/enderecos/' + ${endereco.id} + '/remover'}">Remover</a>
 			</td>
 		</tr>

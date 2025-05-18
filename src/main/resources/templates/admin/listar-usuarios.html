@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Administração - Usuários</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+    <style>
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f3f3f3;
+        }
+        .actions a {
+            margin-right: 10px;
+            color: #80aebd;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Usuários Cadastrados</h1>
+        <div>
+            <a th:href="@{/admin/enderecos}">Ver Todos Endereços</a>
+            <a href="/logout">Sair</a>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="usuario : ${usuarios}">
+            <td th:text="${usuario.nome}"></td>
+            <td th:text="${usuario.email}"></td>
+            <td class="actions">
+                <a th:href="@{'/admin/usuarios/' + ${usuario.id} + '/enderecos'}">Ver Endereços</a> |
+                <a th:href="@{'/admin/usuarios/' + ${usuario.id} + '/remover'}"
+                   onclick="return confirm('Tem certeza que deseja remover este usuário?')">Remover</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

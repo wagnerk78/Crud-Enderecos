@@ -70,8 +70,17 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/remover")
-    public String remover(@PathVariable UUID id) {
+    public String remover(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        if ("admin@admin.com".equals(usuario.getEmail())) {
+            redirectAttributes.addFlashAttribute("erro", "Não é possível remover o usuário admin");
+            return "redirect:/usuarios";
+        }
+
         usuarioRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("sucesso", "Usuário removido com sucesso");
         return "redirect:/usuarios";
     }
 

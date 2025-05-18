@@ -1,15 +1,24 @@
 package com.example.demo.config;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.demo.service.CustomUserDetailsService;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import java.io.IOException;
+import java.util.Collection;
 
 @Configuration
 public class SecurityConfig {
@@ -25,14 +34,31 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/usuarios", "/css/**", "/js/**").permitAll() // liberar index e cadastro
-                        .anyRequest().authenticated() // resto bloqueado
+                        .requestMatchers("/", "/usuarios", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/") // sua página customizada de login
-                        .loginProcessingUrl("/usuarios/login") // url que processa o login (form action)
-                        .defaultSuccessUrl("/enderecos", true) // após login, vai para os endereços
-                        .failureUrl("/?error=true") // volta para login com erro
+                        .loginPage("/")
+                        .loginProcessingUrl("/usuarios/login")
+                        .successHandler(new AuthenticationSuccessHandler() {
+                            @Override
+                            public void onAuthenticationSuccess(HttpServletRequest request,
+                                                                HttpServletResponse response, Authentication authentication)
+                                    throws IOException, ServletException {
+                                // Redireciona para área admin se for admin, senão para enderecos
+                                Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+                                boolean isAdmin = authorities.stream()
+                                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+                                if (isAdmin) {
+                                    response.sendRedirect("/admin/usuarios");
+                                } else {
+                                    response.sendRedirect("/enderecos");
+                                }
+                            }
+                        })
+                        .failureUrl("/?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -56,4 +82,7 @@ public class SecurityConfig {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return auth.build();
     }
+
+
+
 }
