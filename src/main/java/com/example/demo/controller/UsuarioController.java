@@ -2,8 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,10 +14,14 @@ import java.util.UUID;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public UsuarioController(UsuarioRepository usuarioRepository,
+                             PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping
     public ModelAndView listar() {
@@ -36,13 +39,11 @@ public class UsuarioController {
 
     @PostMapping
     public String cadastrar(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
-        // Verifica se já existe um usuário com o mesmo e-mail
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             redirectAttributes.addFlashAttribute("erroCadastro", "E-mail já existe!");
-            return "redirect:/usuarios/"; // redireciona para o método index
+            return "redirect:/usuarios/";
         }
 
-        // Se não existir, salva o novo usuário
         usuario.setId(UUID.randomUUID());
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuarioRepository.save(usuario);
@@ -50,9 +51,6 @@ public class UsuarioController {
         redirectAttributes.addFlashAttribute("mensagemCadastro", "Usuário cadastrado com sucesso!");
         return "redirect:/usuarios/";
     }
-
-
-
 
     @GetMapping("/{id}/editar")
     public ModelAndView editar(@PathVariable UUID id) {
@@ -64,8 +62,19 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}")
-    public String atualizar(@ModelAttribute Usuario usuario) {
+    public String atualizar(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+        // Verifica se a senha foi alterada
+        if (!usuario.getSenha().isEmpty()) {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        } else {
+            // Mantém a senha atual se não foi fornecida nova senha
+            Usuario usuarioExistente = usuarioRepository.findById(usuario.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            usuario.setSenha(usuarioExistente.getSenha());
+        }
+
         usuarioRepository.save(usuario);
+        redirectAttributes.addFlashAttribute("sucesso", "Usuário atualizado com sucesso");
         return "redirect:/usuarios";
     }
 
@@ -85,9 +94,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/")
-    public String index(Usuario usuario) {
+    public String index() {
         return "index";
     }
-
 }
-

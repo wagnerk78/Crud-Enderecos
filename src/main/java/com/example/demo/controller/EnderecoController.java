@@ -29,7 +29,6 @@ public class EnderecoController {
 		String email = principal.getName();
 		Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(email);
 		if (optionalUsuario.isEmpty()) {
-			// Se não encontrar usuário, redireciona para login ou página de erro
 			return new ModelAndView("redirect:/login");
 		}
 
@@ -73,7 +72,6 @@ public class EnderecoController {
 
 		Endereco endereco = optionalEndereco.get();
 
-		// Verifica se o endereço pertence ao usuário logado
 		String email = principal.getName();
 		Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(email);
 		if (optionalUsuario.isEmpty() || !endereco.getUsuario().getId().equals(optionalUsuario.get().getId())) {
@@ -103,12 +101,10 @@ public class EnderecoController {
 
 		Endereco enderecoOriginal = optionalEnderecoOriginal.get();
 
-		// Verifica se o endereço pertence ao usuário logado
 		if (!enderecoOriginal.getUsuario().getId().equals(usuario.getId())) {
 			return "redirect:/enderecos?acessoNegado";
 		}
 
-		// Atualiza os campos manualmente
 		enderecoOriginal.setLogradouro(enderecoAtualizado.getLogradouro());
 		enderecoOriginal.setNumero(enderecoAtualizado.getNumero());
 		enderecoOriginal.setComplemento(enderecoAtualizado.getComplemento());

@@ -18,7 +18,7 @@ public class Usuario {
 
 
     @Column(nullable = false)
-    private String senha; // Senha criptografada
+    private String senha;
 
     public Usuario() {
     }
@@ -27,6 +27,10 @@ public class Usuario {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+    }
+
+    public Usuario(String mail, String senha123) {
+
     }
 
     public UUID getId() {

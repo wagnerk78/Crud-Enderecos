@@ -15,17 +15,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // Usuário admin hardcoded
         if ("admin@admin.com".equals(email)) {
             return User.builder()
                     .username("admin@admin.com")
-                    .password(passwordEncoder().encode("admin")) // Certifique-se que a senha está correta
-                    .roles("ADMIN") // Note que isso cria a role ROLE_ADMIN
+                    .password(passwordEncoder().encode("admin"))
+                    .roles("ADMIN")
                     .build();
         }
 
@@ -34,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return User.builder()
                 .username(usuario.getEmail())
-                .password(usuario.getSenha()) // Certifique-se que a senha está codificada
+                .password(usuario.getSenha())
                 .roles("USER")
                 .build();
     }
@@ -43,4 +45,3 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new BCryptPasswordEncoder();
     }
 }
-

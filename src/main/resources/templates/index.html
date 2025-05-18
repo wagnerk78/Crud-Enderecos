@@ -3,7 +3,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Login - Sistema de Endereços</title>
-	<link rel="stylesheet" th:href="@{/css/estilo.css}">
 	<style>
 		body {
           display: flex;
@@ -99,8 +98,6 @@
 	</style>
 </head>
 <body>
-
-<!-- Toaster para exibir mensagens -->
 <div th:if="${param.error}" class="toast error">
 	<span th:if="${param.admin != null}">Credenciais de administrador inválidas</span>
 	<span th:if="${param.admin == null}">Usuário ou senha inválidos</span>
@@ -109,7 +106,6 @@
 <div th:if="${mensagemCadastro}" class="toast success" th:text="${mensagemCadastro}"></div>
 
 <div class="container">
-	<!-- Tela de Login -->
 	<div id="loginForm" th:if="${#lists.isEmpty(param.cadastro) and erroCadastro == null}">
 		<h2>Login</h2>
 		<form th:action="@{/usuarios/login}" method="post">
@@ -126,8 +122,6 @@
 		</div>
 	</div>
 
-	<!-- Tela de Cadastro -->
-	<!-- Aqui exibimos o cadastro se estiver no modo cadastro ou se existir erro de cadastro -->
 	<div id="cadastroForm" th:if="${!#lists.isEmpty(param.cadastro) or erroCadastro != null}">
 		<h2>Cadastro</h2>
 		<form th:action="@{/usuarios}" method="post">
@@ -148,7 +142,6 @@
 	</div>
 </div>
 
-<!-- Redirecionamento automático para o login se o cadastro foi bem-sucedido -->
 <script th:if="${mensagemCadastro != null}">
 	setTimeout(function() {
       window.location.href = '/';

@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Endereços do Usuário</title>
-    <link rel="stylesheet" th:href="@{/css/estilo.css}">
     <style>
         body {
             font-family: 'Josefin Sans', sans-serif;
@@ -73,7 +72,7 @@
         <h1>Endereços do Usuário: <span th:text="${usuario.nome}"></span></h1>
         <div>
             <a th:href="@{/admin/usuarios}">Voltar para Usuários</a>
-            <a href="/logout">Sair</a>
+            <a th:href="@{/logout}">Sair</a>
         </div>
     </div>
 
@@ -107,7 +106,6 @@
     </table>
 </div>
 <script>
-    // Confirmação de exclusão mais amigável
     document.querySelectorAll('a[onclick]').forEach(link => {
         link.onclick = function(e) {
             if (!confirm('Tem certeza que deseja remover este endereço?')) {

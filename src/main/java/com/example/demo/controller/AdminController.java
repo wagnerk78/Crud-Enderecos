@@ -43,7 +43,6 @@ public class AdminController {
     @Transactional
     public String removerUsuario(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
         try {
-            // Verifica se é o admin (não pode ser removido)
             Usuario usuario = usuarioRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
@@ -51,11 +50,8 @@ public class AdminController {
                 redirectAttributes.addFlashAttribute("erro", "Não é possível remover o usuário admin");
                 return "redirect:/admin/usuarios";
             }
-
-            // Remove todos os endereços do usuário
             enderecoRepository.deleteByUsuarioId(id);
 
-            // Remove o usuário
             usuarioRepository.deleteById(id);
 
             redirectAttributes.addFlashAttribute("sucesso", "Usuário e seus endereços foram removidos com sucesso");
@@ -66,8 +62,6 @@ public class AdminController {
             return "redirect:/admin/usuarios";
         }
     }
-
-
 
     @GetMapping("/usuarios/{id}/enderecos")
     public ModelAndView listarEnderecosDoUsuario(@PathVariable UUID id) {
@@ -104,7 +98,6 @@ public class AdminController {
 
         Endereco endereco = optionalEndereco.get();
 
-        // Atualiza os campos
         endereco.setLogradouro(enderecoAtualizado.getLogradouro());
         endereco.setNumero(enderecoAtualizado.getNumero());
         endereco.setComplemento(enderecoAtualizado.getComplemento());
@@ -117,4 +110,30 @@ public class AdminController {
 
         return "redirect:/admin/usuarios/" + endereco.getUsuario().getId() + "/enderecos?atualizado";
     }
+
+    @GetMapping("/enderecos/{id}/remover")
+    @Transactional
+    public String removerEndereco(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
+        try {
+            Endereco endereco = enderecoRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Endereço não encontrado"));
+
+            UUID usuarioId = endereco.getUsuario().getId();
+            enderecoRepository.delete(endereco);
+
+            redirectAttributes.addAttribute("removido", "true");
+            return "redirect:/admin/usuarios/" + usuarioId + "/enderecos";
+
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("erro", "true");
+            return "redirect:/admin/enderecos";
+        }
+    }
+
+
+    @GetMapping("/")
+    public String mostrarLogin() {
+        return "index"; // Nome do template login.html
+    }
+
 }

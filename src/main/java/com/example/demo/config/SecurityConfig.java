@@ -13,9 +13,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.example.demo.service.CustomUserDetailsService;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -30,9 +30,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/usuarios", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -41,23 +41,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/")
                         .loginProcessingUrl("/usuarios/login")
-                        .successHandler(new AuthenticationSuccessHandler() {
-                            @Override
-                            public void onAuthenticationSuccess(HttpServletRequest request,
-                                                                HttpServletResponse response, Authentication authentication)
-                                    throws IOException, ServletException {
-                                // Redireciona para área admin se for admin, senão para enderecos
-                                Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-                                boolean isAdmin = authorities.stream()
-                                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
-                                if (isAdmin) {
-                                    response.sendRedirect("/admin/usuarios");
-                                } else {
-                                    response.sendRedirect("/enderecos");
-                                }
-                            }
-                        })
+                        .successHandler(authenticationSuccessHandler())
                         .failureUrl("/?error=true")
                         .permitAll()
                 )
@@ -71,18 +55,35 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new AuthenticationSuccessHandler() {
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                Authentication authentication) throws IOException, ServletException {
+                Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+                boolean isAdmin = authorities.stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+                if (isAdmin) {
+                    response.sendRedirect("/admin/usuarios");
+                } else {
+                    response.sendRedirect("/enderecos");
+                }
+            }
+        };
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Configura o AuthenticationManager com seu serviço de usuários
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
         return auth.build();
     }
-
-
-
 }

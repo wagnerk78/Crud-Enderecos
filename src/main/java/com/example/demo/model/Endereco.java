@@ -38,6 +38,9 @@ public class Endereco {
 		this.usuario = usuario;
 	}
 
+	public Endereco(String ruaA, String number, String bairroA, String cidadeA, String estadoA, String s, Usuario usuario) {
+	}
+
 	public UUID getId() {
 		return id;
 	}
