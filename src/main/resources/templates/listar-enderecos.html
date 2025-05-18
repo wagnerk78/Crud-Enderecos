@@ -1,68 +1,118 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<meta charset="UTF-8">
+	<title>Meus Endereços</title>
+	<link rel="stylesheet" th:href="@{/css/estilo.css}">
+	<style>
+		/* Estilização geral */
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f3f3f3;
+          font-family: 'Josefin Sans', sans-serif;
+          padding: 20px;
+          margin: 0;
+        }
 
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width"/>
+        /* Container centralizado com fundo branco e sombra */
+        .container {
+          background: white;
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+          width: 80%;
+          max-width: 800px;
+        }
 
-<title>Interlig</title>
+        h1 {
+          text-align: center;
+          margin-bottom: 20px;
+          color: #333;
+        }
 
-<link rel="stylesheet" th:href="@{/css/estilo.css}" />
+        a {
+          text-decoration: none;
+          color: #80aebd;
+          font-weight: bold;
+        }
 
+        a:hover {
+          text-decoration: underline;
+        }
+
+        /* Estilização da tabela */
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+
+        table, th, td {
+          border: 1px solid #ccc;
+        }
+
+        th, td {
+          padding: 10px;
+          text-align: center;
+        }
+
+        th {
+          background-color: #f3f3f3;
+        }
+
+        .botao-voltar {
+          display: block;
+          margin: 20px auto 0;
+          padding: 10px 15px;
+          background-color: #80aebd;
+          color: white;
+          border-radius: 5px;
+          text-align: center;
+          width: fit-content;
+        }
+
+        .botao-voltar:hover {
+          background-color: #1A237E;
+        }
+	</style>
 </head>
-
 <body>
-	<header>
-		<nav>
-			<ul>
-				<li><a th:href="@{/}"> Interlig Contatos </a></li>
+<div class="container">
+	<h1>Endereços Cadastrados</h1>
 
-				<li><a th:href="@{/contatos}"> Listar </a></li>
+	<a th:href="@{'/enderecos/novo?usuarioId=' + ${usuarioId}}">Novo Endereço</a>
 
-				<li><a th:href="@{/contatos/novo}"> Novo </a></li>
-			</ul>
-		</nav>
-
-	</header>
-	
-	<main>
-		<section>
-			<h1>Lista contatos</h1>
-		</section>
-		
-		<section>
-			<table>
-				<thead>
-					<tr>	
-						<th>Nome</th>
-						<th>Telefone</th>
-						<th>#</th>
-						<th>#</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-					<tr th:each="endereco: ${contatos}">
-						<td th:text="${endereco.nome}"></td>
-						
-						<td th:text="${endereco.telefone}"></td>
-						
-						<td>
-							<a th:href="@{/contatos/{endereco}/editar(endereco=${endereco.id})}">Editar</a>
-						</td>
-						
-						<td>
-							<form th:action="@{/contatos/{endereco}(endereco=${endereco.id})}" method="post">
-								<input type="hidden" name="_method" value="delete" />
-								<button>Remover</button>
-							</form>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</section>
-	</main>
+	<table>
+		<thead>
+		<tr>
+			<th>Logradouro</th>
+			<th>Número</th>
+			<th>Bairro</th>
+			<th>Cidade</th>
+			<th>Estado</th>
+			<th>CEP</th>
+			<th>Ações</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="endereco : ${enderecos}">
+			<td th:text="${endereco.logradouro}"></td>
+			<td th:text="${endereco.numero}"></td>
+			<td th:text="${endereco.bairro}"></td>
+			<td th:text="${endereco.cidade}"></td>
+			<td th:text="${endereco.estado}"></td>
+			<td th:text="${endereco.cep}"></td>
+			<td>
+				<a th:href="@{'/enderecos/' + ${endereco.id} + '/editar'}">Editar</a>
+				&nbsp;|&nbsp;
+				<a th:href="@{'/enderecos/' + ${endereco.id} + '/remover'}">Remover</a>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<a th:href="@{/}" class="botao-voltar">Voltar para o Início</a>
+</div>
 </body>
-
 </html>

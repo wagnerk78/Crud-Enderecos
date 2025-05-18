@@ -1,62 +1,129 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<meta charset="UTF-8">
+	<title>Novo Endereço</title>
+	<link rel="stylesheet" th:href="@{/css/estilo.css}">
+	<style>
+		/* Estilização geral */
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f3f3f3;
+          font-family: 'Josefin Sans', sans-serif;
+          padding: 20px;
+          margin: 0;
+        }
 
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width"/>
+        /* Container centralizado com fundo branco, bordas arredondadas e sombra */
+        .container {
+          background: white;
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+          width: 80%;
+          max-width: 600px;
+        }
 
-<title>Interlig</title>
+        h1 {
+          text-align: center;
+          margin-bottom: 20px;
+          color: #333;
+        }
 
-<link rel="stylesheet" th:href="@{/css/estilo.css}" />
+        form {
+          display: flex;
+          flex-direction: column;
+        }
 
+        label {
+          margin-bottom: 5px;
+          font-weight: bold;
+        }
+
+        input {
+          margin-bottom: 15px;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+        }
+
+        button {
+          background-color: #80aebd;
+          color: white;
+          border: none;
+          padding: 10px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        button:hover {
+          background-color: #1A237E;
+        }
+	</style>
 </head>
-
 <body>
-	<header>
-		<nav>
-			<ul>
-				<li><a th:href="@{/}"> Interlig Contatos </a></li>
+<div class="container">
+	<h1>Cadastro de Endereço</h1>
 
-				<li><a th:href="@{/contatos}"> Listar </a></li>
+	<form th:action="${endereco.id} != null ? @{/enderecos/{id}(id=${endereco.id})} : @{/enderecos}"
+		  th:object="${endereco}" method="post">
 
-				<li><a th:href="@{/contatos/novo}"> Novo </a></li>
-			</ul>
-		</nav>
+		<input type="hidden" th:field="*{id}" />
+		<input type="hidden" th:field="*{usuario.id}" />
 
-	</header>
-	
-	<main>
-		<section>
-			<h1>Cadastro contatos</h1>
-		</section>
+		<label for="cep">CEP:</label>
+		<input type="text" id="cep" th:field="*{cep}" required onblur="buscarCep()">
 
-		<section>
-			<form th:action="${endereco.novo} ? @{/contatos} : @{/contatos/{endereco}(endereco=${endereco.id})}"
-				  method="post" th:object="${endereco}">
+		<label for="logradouro">Logradouro:</label>
+		<input type="text" id="logradouro" th:field="*{logradouro}" required>
 
-				<div th:if="${!endereco.novo}">
-					<input type="hidden" name="_method" value="put" />
-					<label>Código: </label>
-					<input th:field="*{id}" readonly="readonly" />
-				</div>
+		<label for="numero">Número:</label>
+		<input type="text" id="numero" th:field="*{numero}" required>
 
-				<div>
-					<label>Nome: </label>
-					<input th:field="*{nome}" />
-				</div>
+		<label for="complemento">Complemento:</label>
+		<input type="text" id="complemento" th:field="*{complemento}">
 
-				<div>
-					<label>Telefone: </label>
-					<input th:field="*{telefone}"/>
-				</div>
+		<label for="bairro">Bairro:</label>
+		<input type="text" id="bairro" th:field="*{bairro}" required>
 
-				<div>
-					<button>Salvar</button>
-				</div>
-			</form>
-		</section>
-	</main>
+		<label for="cidade">Cidade:</label>
+		<input type="text" id="cidade" th:field="*{cidade}" required>
+
+		<label for="estado">Estado:</label>
+		<input type="text" id="estado" th:field="*{estado}" required>
+
+		<button type="submit" th:text="${endereco.id} != null ? 'Atualizar' : 'Salvar'"></button>
+	</form>
+</div>
+
+<script>
+	function buscarCep() {
+      const cep = document.getElementById("cep").value.replace(/\D/g, '');
+
+      if (cep.length !== 8) {
+        alert("CEP inválido.");
+        return;
+      }
+
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.erro) {
+            alert("CEP não encontrado.");
+            return;
+          }
+
+          document.getElementById("logradouro").value = data.logradouro || '';
+          document.getElementById("bairro").value = data.bairro || '';
+          document.getElementById("cidade").value = data.localidade || '';
+          document.getElementById("estado").value = data.uf || '';
+        })
+        .catch(() => {
+          alert("Erro ao buscar o CEP.");
+        });
+    }
+</script>
 </body>
-
 </html>

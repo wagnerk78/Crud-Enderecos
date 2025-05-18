@@ -1,35 +1,155 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<meta charset="UTF-8">
+	<title>Login - Sistema de Endereços</title>
+	<link rel="stylesheet" th:href="@{/css/estilo.css}">
+	<style>
+		body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background-color: #f3f3f3;
+          font-family: 'Josefin Sans', sans-serif;
+        }
 
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width"/>
+        .container {
+          background: white;
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+          width: 350px;
+          position: relative;
+        }
 
-<title>Interlig</title>
+        h2 {
+          text-align: center;
+          margin-bottom: 20px;
+        }
 
-<link rel="stylesheet" th:href="@{/css/estilo.css}" />
+        form {
+          display: flex;
+          flex-direction: column;
+        }
 
+        label {
+          margin-bottom: 5px;
+        }
+
+        input {
+          margin-bottom: 15px;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+        }
+
+        button {
+          background-color: #80aebd;
+          color: white;
+          border: none;
+          padding: 10px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        button:hover {
+          background-color: #1A237E;
+        }
+
+        .link-toggle {
+          text-align: center;
+          margin-top: 10px;
+          font-size: 0.9em;
+        }
+
+        .link-toggle a {
+          color: #80aebd;
+          text-decoration: none;
+        }
+
+        .link-toggle a:hover {
+          text-decoration: underline;
+        }
+
+        /* Estilização do Toaster */
+        .toast {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          color: white;
+          padding: 15px 20px;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.2);
+          z-index: 1000;
+          animation: fadeOut 4s forwards;
+        }
+        .toast.success {
+          background-color: #4caf50;
+        }
+        .toast.error {
+          background-color: #f44336;
+        }
+
+        @keyframes fadeOut {
+          0% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { opacity: 0; display: none; }
+        }
+	</style>
 </head>
-
 <body>
-	<header>
-		<nav>
-			<ul>
-				<li><a th:href="@{/}"> Interlig Contatos </a></li>
 
-				<li><a th:href="@{/contatos}"> Listar </a></li>
+<!-- Toaster para exibir mensagens -->
+<div th:if="${param.error}" class="toast error">Usuário ou senha inválidos.</div>
+<div th:if="${erroCadastro}" class="toast error" th:text="${erroCadastro}"></div>
+<div th:if="${mensagemCadastro}" class="toast success" th:text="${mensagemCadastro}"></div>
 
-				<li><a th:href="@{/contatos/novo}"> Novo </a></li>
-			</ul>
-		</nav>
-	</header>
-		
-	<main>
-		<section>
-			<h1>Seja bem vindo(a)!</h1>
-		</section>
-	</main>
+<div class="container">
+	<!-- Tela de Login -->
+	<div id="loginForm" th:if="${#lists.isEmpty(param.cadastro) and erroCadastro == null}">
+		<h2>Login</h2>
+		<form th:action="@{/usuarios/login}" method="post">
+			<label>Email:</label>
+			<input type="email" name="username" required>
+
+			<label>Senha:</label>
+			<input type="password" name="password" required>
+
+			<button type="submit">Entrar</button>
+		</form>
+		<div class="link-toggle">
+			Primeira vez aqui? <a href="?cadastro=true">Cadastre-se</a>
+		</div>
+	</div>
+
+	<!-- Tela de Cadastro -->
+	<!-- Aqui exibimos o cadastro se estiver no modo cadastro ou se existir erro de cadastro -->
+	<div id="cadastroForm" th:if="${!#lists.isEmpty(param.cadastro) or erroCadastro != null}">
+		<h2>Cadastro</h2>
+		<form th:action="@{/usuarios}" method="post">
+			<label>Nome:</label>
+			<input type="text" name="nome" required>
+
+			<label>Email:</label>
+			<input type="email" name="email" required>
+
+			<label>Senha:</label>
+			<input type="password" name="senha" required>
+
+			<button type="submit">Cadastrar</button>
+		</form>
+		<div class="link-toggle">
+			Já tem conta? <a href="/">Voltar ao login</a>
+		</div>
+	</div>
+</div>
+
+<!-- Redirecionamento automático para o login se o cadastro foi bem-sucedido -->
+<script th:if="${mensagemCadastro != null}">
+	setTimeout(function() {
+      window.location.href = '/';
+    }, 4000);
+</script>
 </body>
-
 </html>
