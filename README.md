@@ -2,7 +2,8 @@
 
 Este projeto é uma aplicação Spring Boot que gerencia endereços, oferecendo operações CRUD através de uma API RESTful. Após realizar o cadastro, o usuário poderá cadastrar quantos endereços desejar.
 A API consome o site dos correios que busca o CEP na base de dados dos correios, sendo o usúario completando com os demais dados. O sistema utiliza como banco de dados o postgresSQL.
-Para gerenciamento dos cadastros utiliza-se o e-mail: admin@admin.com com a senha: admin. Esse administrador poderá alterar endereços de usuários, excluir usuários do sistema. 
+Para gerenciamento dos cadastros utiliza-se o e-mail: admin@admin.com com a senha: admin. Esse administrador poderá alterar endereços de usuários, excluir usuários do sistema.
+O sistema permite apenas um e-mail por cadastro. Se tentar cadastrar o mesmo e-mail receberá uma mensagem que já existe. 
 
 ## Pré-requisitos
 
